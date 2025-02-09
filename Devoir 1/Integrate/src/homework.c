@@ -9,13 +9,13 @@
 
 double integrate(double x[3], double y[3], double (*f) (double, double))
 {
-    double I = 0;
+    double I = 0.0;
     double xLoc[3];
     double yLoc[3];
 
-    double xi[3] = {1/6, 1/6, 2/3};
-    double eta[3] = {1/6, 2/3, 1/6};
-    double w[3] = {1/6, 1/6, 1/6};
+    double xi[3] = {1.0/6, 1.0/6, 2.0/3};
+    double eta[3] = {1.0/6, 2.0/3, 1.0/6};
+    double w[3] = {1.0/6, 1.0/6, 1.0/6};
 
     double J = fabs((x[1] - x[0]) * (y[2] - y[0]) - (x[2] - x[0]) * (y[1] - y[0]));
 
