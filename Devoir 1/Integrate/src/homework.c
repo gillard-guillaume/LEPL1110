@@ -42,7 +42,7 @@ double integrate(double x[3], double y[3], double (*f) (double, double))
 double integrateRecursive(double x[3], double y[3], double (*f)(double,double), int n)
 {
 
-    double I = 0;
+    double I = 0.0;
 
     if (n == 1) return integrate(x, y, f);
 
