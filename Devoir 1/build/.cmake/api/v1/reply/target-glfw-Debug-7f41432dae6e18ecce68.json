@@ -51,7 +51,7 @@
 			{
 				"command" : 3,
 				"file" : 1,
-				"line" : 12,
+				"line" : 10,
 				"parent" : 4
 			},
 			{
@@ -74,7 +74,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk -mmacosx-version-min=14.6 -fPIC"
+					"fragment" : "-g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk -fPIC"
 				},
 				{
 					"backtrace" : 2,
@@ -102,15 +102,15 @@
 			[
 				{
 					"backtrace" : 6,
-					"path" : "/Users/igor/Desktop/LEPL1110/Devoir2/GeoMesh/glfw/include"
+					"path" : "/Users/igor/Desktop/LEPL1110/Devoir 1/Integrate/glfw/include"
 				},
 				{
 					"backtrace" : 7,
-					"path" : "/Users/igor/Desktop/LEPL1110/Devoir2/GeoMesh/glfw/src"
+					"path" : "/Users/igor/Desktop/LEPL1110/Devoir 1/Integrate/glfw/src"
 				},
 				{
 					"backtrace" : 7,
-					"path" : "/Users/igor/Desktop/LEPL1110/Devoir2/build/glfw/src"
+					"path" : "/Users/igor/Desktop/LEPL1110/Devoir 1/build/glfw/src"
 				}
 			],
 			"language" : "C",
@@ -128,7 +128,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk -mmacosx-version-min=14.6 -fPIC"
+					"fragment" : "-g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk -fPIC"
 				},
 				{
 					"backtrace" : 2,
@@ -153,15 +153,15 @@
 			[
 				{
 					"backtrace" : 6,
-					"path" : "/Users/igor/Desktop/LEPL1110/Devoir2/GeoMesh/glfw/include"
+					"path" : "/Users/igor/Desktop/LEPL1110/Devoir 1/Integrate/glfw/include"
 				},
 				{
 					"backtrace" : 7,
-					"path" : "/Users/igor/Desktop/LEPL1110/Devoir2/GeoMesh/glfw/src"
+					"path" : "/Users/igor/Desktop/LEPL1110/Devoir 1/Integrate/glfw/src"
 				},
 				{
 					"backtrace" : 7,
-					"path" : "/Users/igor/Desktop/LEPL1110/Devoir2/build/glfw/src"
+					"path" : "/Users/igor/Desktop/LEPL1110/Devoir 1/build/glfw/src"
 				}
 			],
 			"language" : "C",
@@ -336,7 +336,7 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "/Users/igor/Desktop/LEPL1110/Devoir2/build/glfw/src/glfw_config.h",
+			"path" : "/Users/igor/Desktop/LEPL1110/Devoir 1/build/glfw/src/glfw_config.h",
 			"sourceGroupIndex" : 1
 		},
 		{

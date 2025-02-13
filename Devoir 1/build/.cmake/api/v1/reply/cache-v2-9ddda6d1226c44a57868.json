@@ -67,7 +67,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/igor/Desktop/LEPL1110/Devoir2/build"
+			"value" : "/Users/igor/Desktop/LEPL1110/Devoir 1/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -503,7 +503,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/igor/Desktop/LEPL1110/Devoir2/build/CMakeFiles/pkgRedirects"
+			"value" : "/Users/igor/Desktop/LEPL1110/Devoir 1/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -575,7 +575,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/igor/Desktop/LEPL1110/Devoir2/GeoMesh"
+			"value" : "/Users/igor/Desktop/LEPL1110/Devoir 1/Integrate"
 		},
 		{
 			"name" : "CMAKE_INSTALL_NAME_TOOL",
@@ -591,7 +591,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/usr/bin/install_name_tool"
+			"value" : "/opt/anaconda3/bin/install_name_tool"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -799,7 +799,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : "14.6"
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_OSX_SYSROOT",
@@ -1191,7 +1191,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/igor/Desktop/LEPL1110/Devoir2/build/glfw"
+			"value" : "/Users/igor/Desktop/LEPL1110/Devoir 1/build/glfw"
 		},
 		{
 			"name" : "GLFW_BUILD_DOCS",
@@ -1263,7 +1263,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/igor/Desktop/LEPL1110/Devoir2/GeoMesh/glfw"
+			"value" : "/Users/igor/Desktop/LEPL1110/Devoir 1/Integrate/glfw"
 		},
 		{
 			"name" : "GLFW_USE_OSMESA",
@@ -1423,7 +1423,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/igor/Desktop/LEPL1110/Devoir2/build"
+			"value" : "/Users/igor/Desktop/LEPL1110/Devoir 1/build"
 		},
 		{
 			"name" : "myFemProject_IS_TOP_LEVEL",
@@ -1447,7 +1447,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/igor/Desktop/LEPL1110/Devoir2/GeoMesh"
+			"value" : "/Users/igor/Desktop/LEPL1110/Devoir 1/Integrate"
 		}
 	],
 	"kind" : "cache",

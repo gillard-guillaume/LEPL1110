@@ -1,7 +1,20 @@
 #include "fem.h"
 
 
+double interpolationH(double x, double r, double d,  double h, double h_glob){
+    // x = distance from the center of the circle
+    // xc = x coordinate of the center of the circle
+    // yc = y coordinate of the center of the circle
+    // r = radius of the circle
+    // d = thickness of the transition zone
+    // h = Circle mesh size
+    // h_glob = reference mesh size
 
+    d = r + d;
+    if (x < r)return h;
+    return h_glob - 3*(h_glob-h)*pow((x-d), 2)/pow((r-d), 2) + 2*(h_glob-h)*pow((x-d), 3)/pow((r-d), 3);
+    ;
+}
 
 double geoSize(double x, double y){
 
@@ -21,17 +34,25 @@ double geoSize(double x, double y){
     double h1 = theGeometry->hHole;
     double d1 = theGeometry->dHole;
 
+    double rx0 = sqrt(pow(x-x0, 2) + pow(y-y0, 2));
+    double rx1 = sqrt(pow(x-x1, 2) + pow(y-y1, 2));
 
+    double h1_temp = h;
+    double h2_temp = h;
+
+    if (rx0 < r0 + d0) h1_temp = interpolationH(rx0, r0, d0, h0, h);
+    if (rx1 < r1 + d1) h2_temp = interpolationH(rx1, r1, d1, h1, h);
+    
+    if (h1_temp < h2_temp) return h1_temp;
+    
+    return h2_temp;
 //
 //     A modifier !
 //     
 // Your contribution starts here ....
 //
 
-    
-     
-    return h;
-    
+
 //   
 // Your contribution ends here :-)
 //
@@ -106,8 +127,8 @@ void geoMeshGenerate() {
 //
 //  Plot of Fltk
 //
-  gmshFltkInitialize(&ierr);
-  gmshFltkRun(&ierr);  //chk(ierr);
+// gmshFltkInitialize(&ierr);
+// gmshFltkRun(&ierr);  //chk(ierr);
 //
     
 }
