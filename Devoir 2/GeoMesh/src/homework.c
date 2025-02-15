@@ -57,32 +57,32 @@ void geoMeshGenerate() {
     double r1 = theGeometry->rHole;
  
 //
-//  -1- Construction de la géométrie avec OpenCascade
-//      On crée le rectangle
-//      On crée les deux cercles
+//  -1- Construction de la gÃ©omÃ©trie avec OpenCascade
+//      On crÃ©e le rectangle
+//      On crÃ©e les deux cercles
 //      On soustrait les cercles du rectangle :-)
 //
  
     int ierr;
-    int idPlate = gmshModelOccAddRectangle(___, ___, ___, ___, ___, ___, ___,&ierr);   
+    int idPlate = gmshModelOccAddRectangle(x0, y0, 0, w, h, -1, 0, &ierr);   
     ErrorGmsh(ierr);
-    int idNotch = gmshModelOccAddDisk(___, ___, ___, ___, ___, ___,NULL,0,NULL,0,&ierr); 
+    int idNotch = gmshModelOccAddDisk(x0, y0, 0, r0, r0, -1, NULL, 0, NULL, 0, &ierr); 
     ErrorGmsh(ierr);
-    int idHole  = gmshModelOccAddDisk(___, ___, ___, ___, ___, ___,NULL,0,NULL,0,&ierr);    
+    int idHole  = gmshModelOccAddDisk(x1, y1, 0, r1, r1, -1, NULL, 0, NULL, 0, &ierr);    
     ErrorGmsh(ierr);
     
-    int plate[] = {___,___};
-    int notch[] = {___,___};
-    int hole[]  = {___,___};
-    gmshModelOccCut(___,___,___,___,NULL,NULL,NULL,NULL,NULL,-1,1,1,&ierr); 
+    int plate[] = {2, idPlate};
+    int notch[] = {2, idNotch};
+    int hole[]  = {2, idHole};
+    gmshModelOccCut(plate, 2, notch, 2, NULL, NULL, NULL, NULL, NULL, -1, 1, 1, &ierr); 
     ErrorGmsh(ierr);
-    gmshModelOccCut(___,___,___,___,NULL,NULL,NULL,NULL,NULL,-1,1,1,&ierr); 
+    gmshModelOccCut(plate, 2, hole, 2, NULL, NULL, NULL, NULL, NULL, -1, 1, 1, &ierr); 
     ErrorGmsh(ierr);
  
 //
-//  -2- Définition de la fonction callback pour la taille de référence
+//  -2- DÃ©finition de la fonction callback pour la taille de rÃ©fÃ©rence
 //      Synchronisation de OpenCascade avec gmsh
-//      Génération du maillage (avec l'option Mesh.SaveAll :-)
+//      GÃ©nÃ©ration du maillage (avec l'option Mesh.SaveAll :-)
                   
    
     geoSetSizeCallback(geoSize);
