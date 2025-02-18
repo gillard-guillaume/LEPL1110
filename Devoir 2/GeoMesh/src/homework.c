@@ -21,12 +21,22 @@ double geoSize(double x, double y){
     double h1 = theGeometry->hHole;
     double d1 = theGeometry->dHole;
 
+    // Computing the distance to the notch and the hole
+    double dNotch = sqrt(pow(x - x0, 2) + pow(y - y0, 2)) - r0;
+    double dHole  = sqrt(pow(x - x1, 2) + pow(y - y1, 2)) - r1;
 
-//
-//     A modifier !
-//     
-// Your contribution starts here ....
-//
+    // Notch interpolation 
+    if (dNotch <= d0) {
+        double x = dNotch / d0;
+        h = h0 + (h - h0) * (3 * x * x - 2 * x * x * x);
+    }
+
+    // Hole interpolation
+    if (dHole <= d1) {
+        double x = dHole / d1;
+        h = h1 + (h - h1) * (3 * x * x - 2 * x * x * x);
+    }
+        
     
      
     return h;
