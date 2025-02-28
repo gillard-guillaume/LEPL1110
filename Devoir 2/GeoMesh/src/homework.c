@@ -1,7 +1,14 @@
 #include "fem.h"
 
 
-
+double hermite_interpolation(double x, double h0, double hstar, double dstar) {
+    // f(x) = a*x^3 + b*x^2 + c*x + d
+    double a = 2 * (h0 - hstar) / pow(dstar, 3);
+    double b = -3 * (h0 - hstar) / pow(dstar, 2);
+    double c = 0;
+    double d = h0;
+    return a * pow(x, 3) + b * pow(x, 2) + c * x + d;
+}
 
 double geoSize(double x, double y){
 
@@ -27,14 +34,12 @@ double geoSize(double x, double y){
 
     // Notch interpolation 
     if (dNotch <= d0) {
-        double x = dNotch / d0;
-        h = h0 + (h - h0) * (3 * x * x - 2 * x * x * x);
+        h = hermite_interpolation(dNotch, h0, h, d0);
     }
 
     // Hole interpolation
     if (dHole <= d1) {
-        double x = dHole / d1;
-        h = h1 + (h - h1) * (3 * x * x - 2 * x * x * x);
+        h = hermite_interpolation(dHole, h1, h, d1);
     }
         
     
