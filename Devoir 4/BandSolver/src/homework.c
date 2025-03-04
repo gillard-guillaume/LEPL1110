@@ -46,7 +46,25 @@ int femMeshComputeBand(femMesh *theMesh)
 
 void femBandSystemAssemble(femBandSystem* myBandSystem, double *Aloc, double *Bloc, int *map, int nLoc)
 {
-    // A Ecrire :-)
+    double *A = myBandSystem->A;
+    double *B = myBandSystem->B;
+    int band = myBandSystem->band;
+    int i, j, iGlob, jGlob;
+
+    for (i = 0; i < nLoc; i++) {
+        iGlob = map[i];
+    
+        for (j = 0; j < nLoc; j++) {
+            jGlob = map[j];
+    
+            if (abs(iGlob - jGlob) <= band) {
+                int index = (iGlob * (band + 1)) + (jGlob - iGlob + band);
+                A[index] += Aloc[i*nLoc+j];
+            }
+        }
+    }
+
+    return;
 }
 
 
