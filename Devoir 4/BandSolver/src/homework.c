@@ -95,6 +95,17 @@ double  *femBandSystemEliminate(femBandSystem *myBand)
 
     }
 
+    // Back-substitution
+    for (i = size - 1; i >= 0; i--) {
+        jend = i + band;
+        if (jend >= size) jend = size - 1;
+        B[i] /= A[i * (band + 1) + band];
+        for (j = i + 1; j <= jend; j++) {
+            B[i] -= A[j * (band + 1) + (i - j + band)] * B[j] / A[i * (band + 1) + band];
+        }
+    }
+    
+
 
     return(myBand->B);
 }
