@@ -74,14 +74,26 @@ void femBandSystemAssemble(femBandSystem* myBandSystem, double *Aloc, double *Bl
 
 double  *femBandSystemEliminate(femBandSystem *myBand)
 {
-    double  **A, *B, factor;
+    double  *A, *B, factor;
     int     i, j, k, jend, size, band;
     A    = myBand->A;
     B    = myBand->B;
     size = myBand->size;
     band = myBand->band;
     
-    // A completer :-)
+    // Triangularisation of the matrix
+    for (i = 0; i < size; i++) {
+        double pivot = A[i * (band + 1) + band]; 
+
+        for (j = i + 1; j <= i + band && j < size; j++) {
+            factor = A[j * (band + 1) + (i - j + band)] / pivot;
+            for (k = i; k <= i + band && k < size; k++) {
+                A[j * (band + 1) + (i - j + band)] -= factor * A[i * (band + 1) + (i - k + band)];
+            }
+            B[j] -= factor * B[i];
+        }
+
+    }
 
 
     return(myBand->B);
