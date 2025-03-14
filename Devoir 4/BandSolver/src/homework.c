@@ -19,6 +19,7 @@ void femMeshRenumber(femMesh *theMesh, femRenumType renumType)
 // debut
 //
         case FEM_XNUM : 
+            theGlobalArray = theMesh->nodes->x;
         case FEM_YNUM : 
             for (i = 0; i < theMesh->nodes->nNodes; i++) 
                 theMesh->nodes->number[i] = i;
