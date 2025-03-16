@@ -65,9 +65,69 @@ double *femElasticitySolve(femProblem *theProblem)
     double *B  = theSystem->B;
     
     
-  //
-  //  A faire :-)
-  //                
+    // Collecting the elements (triangles or quads)
+    for (iElem = 0; iElem < theMesh->nElem; iElem++){
+
+        // Collecting the global indices of the nodes of the element and stocking them temporarily in map
+        for (i = 0; i < nLocal; i++) {
+
+            map[i] = theMesh->elem[iElem*nLocal + i]; 
+
+            // Collecting the coordinates of the nodes
+            x[i] = theNodes->X[map[i]];
+            y[i] = theNodes->Y[map[i]]; 
+
+            // Duplicating the nodes for the displacement in x and y
+            mapX[i] = 2 * map[i];
+            mapY[i] = 2 * map[i] + 1; 
+        }
+        
+        // Loop over the integration points
+
+        for (iInteg = 0; iInteg < theRule->n; iInteg++){
+            // Getting the coordinates and the weights of the integration points
+            double xsi = theRule->xsi[iInteg];
+            double eta = theRule->eta[iInteg];
+            double weight = theRule->weight[iInteg];
+
+            // Computing the shape functions and their derivatives
+            femDiscretePhi2(theSpace,xsi,eta,phi);
+            femDiscreteDphi2(theSpace,xsi,eta,dphidxsi,dphideta);
+
+            // Computing Jacobian matrix
+            double dxdxsi = 0.0, dydxsi = 0.0, dxdeta = 0.0, dydeta = 0.0;
+            for (i = 0; i < theSpace->n; i++) {
+                dxdxsi += dphidxsi[i] * x[i];
+                dydxsi += dphidxsi[i] * y[i];
+                dxdeta += dphideta[i] * x[i];
+                dydeta += dphideta[i] * y[i]; 
+            }
+            double jacobian = fabs(dxdxsi * dydeta - dydxsi * dxdeta);
+
+            // Transformation of the derivatives of the shape functions to global coordinates
+            for (i = 0; i < theSpace->n; i++) {
+                dphidx[i] = (dphidxsi[i] * dydeta - dphideta[i] * dydxsi) / jacobian;
+                dphidy[i] = (-dphidxsi[i] * dxdeta + dphideta[i] * dxdxsi) / jacobian; 
+            }
+
+            // Computing weighted Jacobian
+            double weightJacobian = weight * jacobian;
+
+            // Assembling the rigidity matrix A
+            for (i = 0; i < theSpace->n; i++){
+                for(j = 0; j < theSpace->n; j++){
+                    A[mapX[i]][mapX[j]] += (dphidx[i] * a * dphidx[j] + dphidy[i] * c * dphidy[j]) * weightJacobian;
+                    A[mapX[i]][mapY[j]] += (dphidx[i] * b * dphidy[j] + dphidy[i] * c * dphidx[j]) * weightJacobian;
+                    A[mapY[i]][mapX[j]] += (dphidy[i] * b * dphidx[j] + dphidx[i] * c * dphidy[j]) * weightJacobian;
+                    A[mapY[i]][mapY[j]] += (dphidy[i] * a * dphidy[j] + dphidx[i] * c * dphidx[j]) * weightJacobian;
+                }
+                // Assembling the load vector B
+                B[mapY[i]] -= g * rho * phi[i] * weightJacobian;
+            }
+        }
+
+    }
+        
                 
                 
   
