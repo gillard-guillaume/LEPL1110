@@ -130,22 +130,11 @@ double *femElasticitySolve(femProblem *theProblem){
     femElasticityAssembleNeumann(theProblem);
 
     // Applying Dirichlet boundary conditions
-    int Nnodes = theProblem->geometry->theNodes->nNodes;
+    int size = theSystem->size;
     int *contrainedNodes = theProblem->constrainedNodes;
-    for (int i = 0; i < Nnodes; i++){
-        if(contrainedNodes[i] == 1){
-            int indexX = 2 * i;
-            int indexY = 2 * i + 1;
-
-            for (int j = 0; j < 2 * Nnodes; j++){
-                A[indexX][j] = 0.0;
-                A[indexY][j] = 0.0;
-            }
-            // Adding 1 on the diagonal and 0 in the vector B
-            A[indexX][indexX] = 1.0;
-            A[indexY][indexY] = 1.0;
-            B[indexX] = 0.0;
-            B[indexY] = 0.0;
+    for (int i = 0; i < size; i++){
+        if (contrainedNodes[i] != -1){
+            double value = theProblem->conditions[contrainedNodes[i]]->value;
         }
     }
 
