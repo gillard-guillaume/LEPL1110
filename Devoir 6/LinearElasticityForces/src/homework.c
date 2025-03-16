@@ -82,9 +82,37 @@ void femElasticityAssembleNeumann(femProblem *theProblem){
         femBoundaryType type = theCondition->type;
         double value = theCondition->value;
 
-        //
-        // A completer :-)   
-        //
+        // Checking if the boundary condition is a Neumann condition
+        if (type == NEUMANN_X || type == NEUMANN_Y){
+            // Looping of the boundary of the mesh
+            for (iElem = 0; iElem < theEdges->nElem; iElem++){
+                for (i = 0; i < nLocal; i++){
+                    map[i] = theEdges->elem[iElem*nLocal + i];
+                    mapU[i] = (type == NEUMANN_X) ? 2 * map[i] : 2 * map[i] + 1;
+                    x[i] = theNodes->X[map[i]];
+                    y[i] = theNodes->Y[map[i]];
+                }
+                
+                // Computing the 1D jacobian
+                double dx = x[1] - x[0];
+                double dy = y[1] - y[0];
+                double jacobian = sqrt(dx*dx + dy*dy);
+
+                // Integrating in 1D
+                for (iInteg = 0; iInteg < theRule->n; i++){
+                    double xsi = theRule->xsi[iInteg];
+                    double weight = theRule->weight[iInteg];
+
+                    femDiscretePhi(theSpace, xsi, phi);
+
+                    // Assembling Forces in B
+                    for (i = 0; i < nLocal; i++){
+                        B[mapU[i]] += phi[i] * value * jacobian * weight;
+                    }
+                    
+                }
+            }
+        }
 
     }
 }
@@ -92,19 +120,58 @@ void femElasticityAssembleNeumann(femProblem *theProblem){
 
 
 double *femElasticitySolve(femProblem *theProblem){
- 
-    //       
-    // A completer :-) 
-    //  
+    femFullSystem *theSystem = theProblem->system;
+    double **A = theSystem->A;
+    double *B = theSystem->B;
+    double *U = theProblem->soluce;
 
-     return theProblem->soluce;
+    // Assembling the system
+    femElasticityAssembleElements(theProblem);
+    femElasticityAssembleNeumann(theProblem);
+
+    // Applying Dirichlet boundary conditions
+    int Nnodes = theProblem->geometry->theNodes->nNodes;
+    int *contrainedNodes = theProblem->constrainedNodes;
+    for (int i = 0; i < Nnodes; i++){
+        if(contrainedNodes[i] == 1){
+            int indexX = 2 * i;
+            int indexY = 2 * i + 1;
+
+            for (int j = 0; j < 2 * Nnodes; j++){
+                A[indexX][j] = 0.0;
+                A[indexY][j] = 0.0;
+            }
+            // Adding 1 on the diagonal and 0 in the vector B
+            A[indexX][indexX] = 1.0;
+            A[indexY][indexY] = 1.0;
+            B[indexX] = 0.0;
+            B[indexY] = 0.0;
+        }
+    }
+
+    // Solving the system
+    U = femFullSystemEliminate(theSystem);
+
+    return theProblem->soluce;
 }
 
 double * femElasticityForces(femProblem *theProblem){        
-           
-    //       
-    // A completer :-) 
-    //  
+    femFullSystem *theSystem = theProblem->system;
+    double **A = theSystem->A;
+    double *B = theSystem->B;
+    double *U = theProblem->soluce;
+    double *R = theProblem->residuals;
+    int nNode = theProblem->geometry->theNodes->nNodes;
+
+    // Computing the residuals R = B - A*U
+    // If a node is not contrained, the equation A*U = B is satisfied and the residual is 0
+    // If a node is contrained, the equation A*U = B is not satisfied and the residual give the reaction force
+    for(int i = 0; i < 2 * nNode; i++){
+        R[i] = B[i];
+        for(int j = 0; j < 2 * nNode; j++){
+            R[i] -= A[i][j] * U[j];
+        }
+    }
 
     return theProblem->residuals;
 }
