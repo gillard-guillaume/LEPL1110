@@ -102,7 +102,7 @@ void femElasticityAssembleNeumann(femProblem *theProblem){
                 double jacobian = sqrt(dx*dx + dy*dy)/2;
 
                 // Integrating in 1D
-                for (iInteg = 0; iInteg < theRule->n; i++){
+                for (iInteg = 0; iInteg < theRule->n; iInteg++){
                     double xsi = theRule->xsi[iInteg];
                     double weight = theRule->weight[iInteg];
 
