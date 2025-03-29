@@ -1,6 +1,5 @@
 #include "fem.h"
 
-
 void femElasticityAssembleElements(femProblem *theProblem){
     femFullSystem  *theSystem = theProblem->system;
     femIntegration *theRule = theProblem->rule;
@@ -80,12 +79,16 @@ void femElasticityAssembleNeumann(femProblem *theProblem){
     for(iBnd=0; iBnd < theProblem->nBoundaryConditions; iBnd++){
         femBoundaryCondition *theCondition = theProblem->conditions[iBnd];
         femBoundaryType type = theCondition->type;
+        femDomain *theDomain = theCondition->domain;
         double value = theCondition->value;
 
         // Checking if the boundary condition is a Neumann condition
         if (type == NEUMANN_X || type == NEUMANN_Y){
-            // Looping of the boundary of the mesh
-            for (iElem = 0; iElem < theEdges->nElem; iElem++){
+            // Looping on the domain of the boundary condition
+            for (iEdge = 0; iEdge < theDomain->nElem; iEdge++){
+                // Getting the global element number
+                iElem = theDomain->elem[iEdge];
+
                 for (i = 0; i < nLocal; i++){
                     map[i] = theEdges->elem[iElem*nLocal + i];
                     mapU[i] = (type == NEUMANN_X) ? 2 * map[i] : 2 * map[i] + 1;
@@ -96,7 +99,7 @@ void femElasticityAssembleNeumann(femProblem *theProblem){
                 // Computing the 1D jacobian
                 double dx = x[1] - x[0];
                 double dy = y[1] - y[0];
-                double jacobian = sqrt(dx*dx + dy*dy);
+                double jacobian = sqrt(dx*dx + dy*dy)/2;
 
                 // Integrating in 1D
                 for (iInteg = 0; iInteg < theRule->n; i++){
@@ -106,7 +109,7 @@ void femElasticityAssembleNeumann(femProblem *theProblem){
                     femDiscretePhi(theSpace, xsi, phi);
 
                     // Assembling Forces in B
-                    for (i = 0; i < nLocal; i++){
+                    for (i = 0; i < theSpace->n; i++){
                         B[mapU[i]] += phi[i] * value * jacobian * weight;
                     }
                     
@@ -117,6 +120,10 @@ void femElasticityAssembleNeumann(femProblem *theProblem){
     }
 }
 
+
+double **A_copy = NULL;
+double *B_copy  = NULL;
+int size = 0;
 
 
 double *femElasticitySolve(femProblem *theProblem){
@@ -129,17 +136,37 @@ double *femElasticitySolve(femProblem *theProblem){
     femElasticityAssembleElements(theProblem);
     femElasticityAssembleNeumann(theProblem);
 
+    size = theSystem->size;
+
+    // Copying the system to not
+    if (A_copy == NULL)
+    {
+        A_copy = (double **) malloc(sizeof(double *) * size);
+        for (int i = 0; i < size; i++) { A_copy[i] = (double *) malloc(sizeof(double) * size); }
+    }
+    if (B_copy == NULL) { B_copy = (double *) malloc(sizeof(double) * size); }
+
+    // Copy the stiffness matrix A and the load vector B
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++) { A_copy[i][j] = theSystem->A[i][j]; }
+        B_copy[i] = theSystem->B[i];
+    }
+
+
     // Applying Dirichlet boundary conditions
     int size = theSystem->size;
     int *contrainedNodes = theProblem->constrainedNodes;
     for (int i = 0; i < size; i++){
         if (contrainedNodes[i] != -1){
             double value = theProblem->conditions[contrainedNodes[i]]->value;
+            femFullSystemConstrain(theSystem, i, value);
         }
     }
 
     // Solving the system
     U = femFullSystemEliminate(theSystem);
+    memcpy(theProblem->soluce, theSystem->B, theSystem->size * sizeof(double));
 
     return theProblem->soluce;
 }
@@ -152,15 +179,27 @@ double * femElasticityForces(femProblem *theProblem){
     double *R = theProblem->residuals;
     int nNode = theProblem->geometry->theNodes->nNodes;
 
+    size = theSystem->size;
+
+    if (R == NULL) { R = (double *) malloc(sizeof(double) * size); }
+    
+    for (int i = 0; i < size; i++) { R[i] = 0.0; }
+
     // Computing the residuals R = B - A*U
     // If a node is not contrained, the equation A*U = B is satisfied and the residual is 0
     // If a node is contrained, the equation A*U = B is not satisfied and the residual give the reaction force
-    for(int i = 0; i < 2 * nNode; i++){
-        R[i] = B[i];
-        for(int j = 0; j < 2 * nNode; j++){
-            R[i] -= A[i][j] * U[j];
+    for(int i = 0; i < size; i++){
+
+        for(int j = 0; j < size; j++){
+            R[i] -= A_copy[i][j] * U[j];
         }
+        R[i] -= B_copy[i];
+
     }
 
-    return theProblem->residuals;
+    for (int i = 0; i < size; i++) { free(A_copy[i]); A_copy[i] = NULL;}
+    free(A_copy); free(B_copy);
+    A_copy = NULL; B_copy = NULL;
+
+    return R;
 }
