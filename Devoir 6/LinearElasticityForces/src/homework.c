@@ -191,7 +191,7 @@ double * femElasticityForces(femProblem *theProblem){
     for(int i = 0; i < size; i++){
 
         for(int j = 0; j < size; j++){
-            R[i] -= A_copy[i][j] * U[j];
+            R[i] += A_copy[i][j] * U[j];
         }
         R[i] -= B_copy[i];
 
